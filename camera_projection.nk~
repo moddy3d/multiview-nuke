@@ -1,0 +1,937 @@
+#! /Applications/Nuke7.0v5/NukeX7.0v5.app/../Nuke7.0v5.app/Contents/MacOS/Nuke7.0v5 -nx
+version 7.0 v5
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="1450" y="0" w="1920" h="1080" screen="2">
+        <splitter orientation="1">
+            <split size="1214"/>
+            <splitter orientation="1">
+                <split size="46"/>
+                <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                    <page id="Toolbar.1"/>
+                </dock>
+                <split size="1164"/>
+                <splitter orientation="2">
+                    <split size="619"/>
+                    <dock id="" activePageId="Viewer.1">
+                        <page id="Viewer.1"/>
+                    </dock>
+                    <split size="435"/>
+                    <dock id="" activePageId="DAG.1">
+                        <page id="DAG.1"/>
+                        <page id="Curve Editor.1"/>
+                        <page id="DopeSheet.1"/>
+                        <page id="DAG.2"/>
+                    </dock>
+                </splitter>
+            </splitter>
+            <split size="702"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /Users/Moddy/Desktop/2Dto3D/CameraProjection6.nk
+ frame 17
+ first_frame 0
+ last_frame 50
+ lock_range true
+ format "1920 1080 0 0 1920 1080 1 HD"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ views "left #ff0000
+right #00ff00"
+}
+BackdropNode {
+ inputs 0
+ name projection_group
+ tile_color 0x1993ff
+ gl_color 0xcc26ff
+ label "<center>PROJECTION RIG"
+ note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+ note_font_size 80
+ note_font_color 0xffffffff
+ xpos -1931
+ ypos -938
+ bdwidth 1158
+ bdheight 1168
+}
+BackdropNode {
+ inputs 0
+ name CONTROL_PANEL
+ tile_color 0x1993ff
+ label "<center>CONTROL PANEL"
+ note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+ note_font_size 42
+ xpos -761
+ ypos -935
+ bdwidth 587
+ bdheight 320
+}
+BackdropNode {
+ inputs 0
+ name multilayer_group
+ tile_color 0x7fffff
+ label "<center>OUTPUT STREAM: MULTIVIEW LAYERS"
+ note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+ note_font_size 50
+ note_font_color 0xff
+ xpos -1935
+ ypos 237
+ bdwidth 1167
+ bdheight 195
+}
+BackdropNode {
+ inputs 0
+ name BackdropNode1
+ tile_color 0x7171c600
+ label "<center>Format: 9 Grid\n"
+ note_font "Arial Bold"
+ note_font_size 64
+ note_font_color 0xffffffff
+ xpos -1937
+ ypos 447
+ bdwidth 1170
+ bdheight 313
+}
+StickyNote {
+ inputs 0
+ name version_note
+ label "version 2"
+ xpos -262
+ ypos -913
+}
+NoOp {
+ inputs 0
+ name PROJECT_SETTINGS
+ tile_color 0xff0000ff
+ gl_color 0xff0000ff
+ note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+ note_font_size 50
+ note_font_color 0xff
+ xpos -510
+ ypos -710
+ hide_input true
+ addUserKnob {20 proj_settings l "Project Settings"}
+ addUserKnob {1 project_path l "Project Path"}
+ project_path D:/Projects/water
+ addUserKnob {1 output_prefix l "Output Prefix"}
+ output_prefix background
+}
+Axis2 {
+ inputs 0
+ name PIVOT
+ xpos -1382
+ ypos -648
+}
+set N18a682f0 [stack 0]
+Camera2 {
+ translate {{RIG_SETTINGS.stereo_base/2} 0 {CAM_9.translate.z}}
+ rotate {0 {"CAM_9.rotate.y * -1" x681 0.5} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{"RIG_SETTINGS.haperture - RIG_SETTINGS.zoom"}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_1
+ xpos -942
+ ypos -648
+}
+push $N18a682f0
+Camera2 {
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_CHECK
+ xpos -1382
+ ypos -476
+}
+set N18a76160 [stack 0]
+push 0
+push 0
+push $N18a682f0
+Camera2 {
+ focal {{RIG_SETTINGS.focal_length}}
+ haperture {{RIG_SETTINGS.haperture}}
+ vaperture {{"RIG_SETTINGS.haperture * RIG_SETTINGS.image_dim.h / RIG_SETTINGS.image_dim.w"}}
+ focal_point 60
+ name Cam_PROJECT
+ xpos -1382
+ ypos -794
+}
+set N18a84850 [stack 0]
+Constant {
+ inputs 0
+ color {0 0 1 0.05}
+ name DIVERGENCE_COLOR
+ xpos -1172
+ ypos -3
+}
+Text {
+ message "Disparity in Pixels: \[expression \"(DIVERGENCE_PLANE.z - Cam_PROJECT.focal )*CAM_1.translate.x*2 / DIVERGENCE_PLANE.z / CAM_1.haperture * 1920\"] px\n\nDisparity Ratio: \[expression \"(DIVERGENCE_PLANE.z - Cam_PROJECT.focal)*CAM_1.translate.x*2 / DIVERGENCE_PLANE.z / CAM_1.haperture * 30\"] / 30"
+ size 100
+ xjustify center
+ yjustify center
+ Transform 1
+ box {0 0 1920 1080}
+ center {960 540}
+ name DIVERGENCE_INFO
+ xpos -1172
+ ypos 69
+}
+Premult {
+ name DIVERGENCE_PREMULT
+ xpos -1172
+ ypos 93
+}
+Project3D {
+ inputs 2
+ name DIVERGENCE_PROJECT
+ xpos -1172
+ ypos 117
+}
+Card2 {
+ render_mode off
+ rows 1
+ columns 1
+ z {{"\[expression \"(CAM_1.translate.x*2*Cam_PROJECT.focal)/ (CAM_1.translate.x*2 - RIG_SETTINGS.div_disp*CAM_1.haperture / 1920)\"]"}}
+ lens_in_focal {{Cam_PROJECT.focal}}
+ lens_in_haperture {{Cam_PROJECT.haperture}}
+ control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+ name DIVERGENCE_PLANE
+ xpos -1172
+ ypos 141
+}
+push $N18a84850
+Camera2 {
+ translate {{0} 0 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ fstop 30
+ name CAM_5
+ xpos -1382
+ ypos -571
+}
+set N3198b760 [stack 0]
+push $N18a76160
+push $N18a84850
+Constant {
+ inputs 0
+ color {1 0 0 0.05}
+ name CONVERGENCE_COLOR
+ xpos -952
+ ypos -3
+}
+Text {
+ message "Disparity in Pixels: \[expression \"(CONVERGENCE_PLANE.z - Cam_PROJECT.focal)*CAM_1.translate.x*2 / CONVERGENCE_PLANE.z/ CAM_1.haperture * 1920\"] px\n\nDisparity Ratio: \[expression \"(CONVERGENCE_PLANE.z - Cam_PROJECT.focal) * CAM_1.translate.x*2 / CONVERGENCE_PLANE.z/ CAM_1.haperture * 30\"] / 30"
+ size 100
+ xjustify center
+ yjustify center
+ Transform 1
+ box {0 0 1920 1080}
+ center {960 540}
+ name CONVERGENCE_INFO
+ xpos -952
+ ypos 69
+}
+Premult {
+ name CONVERGENCE_PREMULT
+ xpos -952
+ ypos 93
+}
+Project3D {
+ inputs 2
+ name CONVERGENCE_PROJECT
+ xpos -952
+ ypos 117
+}
+Card2 {
+ render_mode off
+ rows 1
+ columns 1
+ z {{"\[expression \"(CAM_1.translate.x*2*Cam_PROJECT.focal)/ (CAM_1.translate.x*2 - RIG_SETTINGS.conv_disp*CAM_1.haperture / 1920)\"]"}}
+ lens_in_focal {{Cam_PROJECT.focal}}
+ lens_in_haperture {{Cam_PROJECT.haperture}}
+ control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+ name CONVERGENCE_PLANE
+ xpos -952
+ ypos 141
+}
+push $N18a84850
+Constant {
+ inputs 0
+ color {0 1 0 0.05}
+ name ZERO_COLOR
+ xpos -1062
+ ypos -3
+}
+Text {
+ message "ZERO PARALLAX PLANE"
+ size 100
+ xjustify center
+ yjustify center
+ Transform 1
+ box {0 0 1920 1080}
+ center {960 540}
+ name ZERO_INFO
+ xpos -1062
+ ypos 69
+}
+Premult {
+ name ZERO_PREMULT
+ xpos -1062
+ ypos 93
+}
+Project3D {
+ inputs 2
+ name ZERO_PROJECT
+ xpos -1062
+ ypos 117
+}
+Card2 {
+ render_mode off
+ rows 1
+ columns 1
+ z {{Cam_PROJECT.focal}}
+ lens_in_focal {{Cam_PROJECT.focal}}
+ lens_in_haperture {{Cam_PROJECT.haperture}}
+ control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+ name ZERO_PLANE
+ xpos -1062
+ ypos 141
+}
+NoOp {
+ inputs 0
+ name RIG_SETTINGS
+ tile_color 0x28ffff
+ gl_color 0xff00ff
+ note_font "Verdana Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold Bold"
+ note_font_size 50
+ note_font_color 0x50000ff
+ xpos -524
+ ypos -797
+ hide_input true
+ addUserKnob {20 settings l Rig}
+ addUserKnob {20 source_group l Source n 1}
+ addUserKnob {14 image_dim l "Image Dimensions" R 0 100}
+ image_dim {1920 1080}
+ addUserKnob {20 endGroup_2 l endGroup n -1}
+ addUserKnob {20 camera_group l Camera n 1}
+ addUserKnob {7 stereo_base l "Stereo Base" R 0 10}
+ stereo_base 10
+ addUserKnob {7 focal_length l "Focal Length" R 0 200}
+ focal_length 100
+ addUserKnob {7 haperture l "Horizontal Aperature" R 0 200}
+ haperture 24
+ addUserKnob {7 zoom l "Render Camera Zoom" R 0 10}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {20 visual_group l Visual n 1}
+ addUserKnob {7 conv_disp l "Hyperconvergence Gate" R -100 0}
+ conv_disp -86.5
+ addUserKnob {7 div_disp l "Hyperdivergence Gate" R 0 100}
+ div_disp 80
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+ addUserKnob {20 render_tab l Render}
+ addUserKnob {7 render_samples l Samples R 1 50}
+ render_samples 1
+ addUserKnob {7 render_sample_diameter l "Sample Diameter" R 0 4}
+}
+Ramp {
+ inputs 0
+ name Ramp1
+ xpos -2317
+ ypos -631
+}
+Read {
+ inputs 0
+ file /Users/Moddy/Desktop/2Dto3D/1920_1200/手表_1080.png
+ format "1920 1080 0 0 1920 1080 1 HD"
+ origset true
+ name Read1
+ xpos -2130
+ ypos -892
+}
+push $N18a84850
+Group {
+ inputs 4
+ name ProjectionLayer
+ xpos -2130
+ ypos -631
+ addUserKnob {20 User}
+ addUserKnob {7 bpdisp l "Black Point Disparity" R -100 100}
+ bpdisp 74
+ addUserKnob {7 wpdisp l "White Point Disparity" R -100 100}
+ wpdisp -8.5
+}
+ Input {
+  inputs 0
+  name Depth
+  label "\[value number]"
+  xpos -741
+  ypos -43
+  number 2
+ }
+ Input {
+  inputs 0
+  name Camera
+  label "\[value number]"
+  xpos -296
+  ypos -202
+ }
+set N1a995280 [stack 0]
+push $N1a995280
+ Input {
+  inputs 0
+  name Color
+  label "\[value number]\n"
+  xpos -542
+  ypos -257
+  number 1
+ }
+ Project3D {
+  inputs 2
+  name Project3D1
+  xpos -542
+  ypos -197
+ }
+ Card2 {
+  rows 20
+  columns 20
+  z {{"\[expression \"(parent.input\[value Rig.number].stereo_base*parent.input\[value Camera.number].focal)/ (parent.input\[value Rig.number].stereo_base - parent.bpdisp*parent.input\[value Rig.number].haperture / RIG_SETTINGS.image_dim.left.w)\"]"}}
+  lens_in_focal {{"parent.input\[value Camera.number].focal"}}
+  lens_in_haperture 24
+  control_points {3 3 3 6 
+
+1 {-0.5 -0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0 0 0} 
+1 {0 -0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {0.5 0 0} 
+1 {0.5 -0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666865 0} 0 {0 0 0} 0 {1 0 0} 
+1 {-0.5 0 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0 0.5 0} 
+1 {0 0 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {0.5 0.5 0} 
+1 {0.5 0 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0.1666666716 0} 0 {0 -0.1666666716 0} 0 {1 0.5 0} 
+1 {-0.5 0.5 0} 0 {0.1666666865 0 0} 0 {0 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0 1 0} 
+1 {0 0.5 0} 0 {0.1666666716 0 0} 0 {-0.1666666716 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {0.5 1 0} 
+1 {0.5 0.5 0} 0 {0 0 0} 0 {-0.1666666865 0 0} 0 {0 0 0} 0 {0 -0.1666666865 0} 0 {1 1 0} }
+  name Card2
+  xpos -542
+  ypos -139
+  disable {{"!\[exists parent.input\[value Camera.number]] | !\[exists parent.input\[value Rig.number]]"}}
+ }
+ Normals {
+  inputs 2
+  action lookat
+  name Normals1
+  xpos -542
+  ypos -82
+ }
+ DisplaceGeo {
+  inputs 2
+  scale {{"\[expression \"\n((parent.input\[value Rig.number].stereo_base*parent.input\[value Camera.number].focal)/ (parent.input\[value Rig.number].stereo_base - (parent.bpdisp * parent.input\[value Rig.number].haperture / parent.input\[value Rig.number].image_dim.left.w))) \n-\n((parent.input\[value Rig.number].stereo_base*parent.input\[value Camera.number].focal)/ (parent.input\[value Rig.number].stereo_base - (parent.wpdisp * parent.input\[value Rig.number].haperture / parent.input\[value Rig.number].image_dim.left.w)))\"]"}}
+  filter_size 2.3
+  name DisplaceGeo1
+  xpos -542
+  ypos -43
+ }
+set N1a9d6a50 [stack 0]
+ Output {
+  name Output1
+  xpos -542
+  ypos 80
+ }
+ Output {
+  name Output2
+  xpos -542
+  ypos 180
+ }
+ Input {
+  inputs 0
+  name Rig
+  label "\[value number]"
+  xpos -296
+  ypos -149
+  number 3
+ }
+push $N1a9d6a50
+ Viewer {
+  input_process false
+  name Viewer1
+  xpos -237
+  ypos 7
+ }
+end_group
+push $N18a682f0
+push $N18a682f0
+Camera2 {
+ translate {{"CAM_8.translate.x * -1"} 0 {CAM_8.translate.z}}
+ rotate {0 {"CAM_8.rotate.y * -1" x681 0.5} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_2
+ xpos -1052
+ ypos -600
+}
+set N1ab00000 [stack 0]
+push $N18a682f0
+Camera2 {
+ translate {{"CAM_1.translate * -1"} 0 0}
+ rotate {0 {"(90 + (atan(Cam_PROJECT.focal/CAM_9.translate.x) * 360 / pi / 2)) * -1"} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_9
+ xpos -1822
+ ypos -648
+}
+set N1ab0ec00 [stack 0]
+Scene {
+ inputs 12
+ name RIG_SCENE
+ xpos -1382
+ ypos -119
+}
+set N1ab1dc20 [stack 0]
+push 0
+add_layer {surface surface.u surface.v surface.u}
+ScanlineRender {
+ inputs 3
+ filter Rifman
+ max_tessellation 1
+ samples {{RIG_SETTINGS.render_samples.left x17 17.6}}
+ shutter 0
+ shutteroffset centred
+ shuttercustomoffset 1
+ spatial_jitter {{RIG_SETTINGS.render_sample_diameter.left x17 0.155}}
+ motion_vectors_type velocity
+ output_shader_vectors true
+ N_channel surface
+ name Scanline_Render
+ xpos -952
+ ypos -387
+}
+set C1ab261a0 [stack 0]
+set N1abb4840 [stack 0]
+push $N1ab0ec00
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1832
+ ypos -378
+ selected false
+}
+set N1ac02bf0 [stack 0]
+JoinViews {
+ inputs 2
+ name RIG_JOINVIEWS
+ xpos -1400
+ ypos 22
+ viewassoc "left\nright"
+}
+Anaglyph {
+ views {left right}
+ name RIG_ANAGLYPH
+ xpos -1400
+ ypos 99
+}
+push $N1abb4840
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam1.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_1
+ xpos -952
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird1
+ xpos -952
+ ypos 576
+}
+set N3e0a4160 [stack 0]
+Transform {
+ translate {0 720}
+ name TranslateToGrid1
+ xpos -952
+ ypos 649
+}
+push $N1ab00000
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1062
+ ypos -387
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam2.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_2
+ xpos -1062
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird2
+ xpos -1062
+ ypos 576
+}
+set N3def7300 [stack 0]
+Transform {
+ translate {640 720}
+ name TranslateToGrid2
+ xpos -1062
+ ypos 649
+}
+push $N18a682f0
+Camera2 {
+ translate {{"CAM_7.translate.x * -1"} 0 {CAM_7.translate.z}}
+ rotate {0 {"CAM_7.rotate.y * -1" x681 0.5} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_3
+ xpos -1162
+ ypos -552
+}
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1172
+ ypos -384
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam3.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_3
+ xpos -1172
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird3
+ xpos -1172
+ ypos 576
+}
+set N3db1bf20 [stack 0]
+Transform {
+ translate {1280 720}
+ name TranslateToGrid3
+ xpos -1172
+ ypos 649
+}
+push $N18a682f0
+Camera2 {
+ translate {{"CAM_6.translate.x * -1"} 0 {CAM_6.translate.z}}
+ rotate {0 {"CAM_6.rotate.y * -1" x681 0.5} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_4
+ xpos -1272
+ ypos -504
+}
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1282
+ ypos -385
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam4.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_4
+ xpos -1282
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird4
+ xpos -1282
+ ypos 576
+}
+set N3dbc4340 [stack 0]
+Transform {
+ translate {0 360}
+ name TranslateToGrid4
+ xpos -1282
+ ypos 649
+}
+push $N18a682f0
+Camera2 {
+ translate {{CAM_9.translate.x/4.0*1} 0 0}
+ rotate {0 {"-(90 + atan(Cam_PROJECT.focal/CAM_6.translate.x) * 360 / pi / 2)"} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_6
+ xpos -1492
+ ypos -504
+}
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1514
+ ypos -377
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam6.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_6
+ xpos -1501
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird6
+ xpos -1501
+ ypos 576
+}
+set N34919b40 [stack 0]
+Transform {
+ translate {1280 360}
+ name TranslateToGrid6
+ xpos -1501
+ ypos 649
+}
+push $N18a76160
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1392
+ ypos -199
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam5.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_5
+ xpos -1392
+ ypos 342
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird5
+ xpos -1392
+ ypos 574
+}
+set N349e8580 [stack 0]
+Transform {
+ translate {640 360}
+ name TranslateToGrid5
+ xpos -1392
+ ypos 647
+}
+push $N1ac02bf0
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam9.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_9
+ xpos -1832
+ ypos 343
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird9
+ xpos -1832
+ ypos 575
+}
+set N34b58be0 [stack 0]
+Transform {
+ translate {1280 0}
+ name TranslateToGrid9
+ xpos -1832
+ ypos 648
+}
+push 0
+push $N18a682f0
+Camera2 {
+ translate {{CAM_9.translate.x/4.0*3} 0 0}
+ rotate {0 {"-(90 + atan(Cam_PROJECT.focal/CAM_8.translate.x) * 360 / pi / 2)"} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_8
+ xpos -1712
+ ypos -599
+}
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1722
+ ypos -380
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam8.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_8
+ xpos -1722
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird8
+ xpos -1722
+ ypos 576
+}
+set N18da5980 [stack 0]
+Transform {
+ translate {640 0}
+ name TranslateToGrid8
+ xpos -1722
+ ypos 649
+}
+push $N18a682f0
+Camera2 {
+ translate {{CAM_9.translate.x/4.0*2} 0 0}
+ rotate {0 {"-(90 + atan(Cam_PROJECT.focal/CAM_7.translate.x) * 360 / pi / 2)"} 0}
+ focal {{Cam_PROJECT.focal.left}}
+ haperture {{CAM_1.haperture.left}}
+ vaperture {{Cam_PROJECT.vaperture.left}}
+ focal_point {{Cam_PROJECT.focal}}
+ name CAM_7
+ xpos -1602
+ ypos -552
+}
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1612
+ ypos -380
+ selected false
+}
+Write {
+ channels all
+ file "\[value PROJECT_SETTINGS.project_path]/output/layers/\[value PROJECT_SETTINGS.output_prefix].cam7.######.exr"
+ views {left}
+ file_type exr
+ version 2
+ name out_multilayer_7
+ xpos -1612
+ ypos 344
+}
+Transform {
+ scale 0.3333333333
+ name ScaleToOneThird7
+ xpos -1612
+ ypos 576
+}
+set N3e08d290 [stack 0]
+Transform {
+ name TranslateToGrid7
+ xpos -1612
+ ypos 649
+}
+Merge2 {
+ inputs 9+1
+ name Merge1
+ xpos -1392
+ ypos 713
+}
+Write {
+ name Write1
+ xpos -1392
+ ypos 841
+}
+push $N3e0a4160
+push $N3def7300
+push $N3db1bf20
+push $N3dbc4340
+push $N349e8580
+push $N34919b40
+push $N3e08d290
+push $N18da5980
+push $N34b58be0
+Viewer {
+ inputs 9
+ input_number 4
+ input_process false
+ name Viewer1
+ xpos 316
+ ypos -21
+}
+push $N3198b760
+push $N1ab1dc20
+push 0
+clone $C1ab261a0 {
+ inputs 3
+ xpos -1392
+ ypos -377
+ selected false
+}
